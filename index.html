@@ -1,342 +1,669 @@
 <!DOCTYPE html>
-<html lang="sw">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>APP DASHBOARD | Smart Tools</title>
+    <title>Fee TV Manager | Live Channels Hub</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none; /* smooth UI */
         }
 
         body {
-            background: radial-gradient(circle at 10% 20%, #0e1c2a, #030a11);
-            min-height: 100vh;
-            font-family: 'Segoe UI', 'Poppins', 'Inter', system-ui, -apple-system, sans-serif;
-            padding: 24px 20px 40px;
+            background: #0a0f1e;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            color: #eef2ff;
+            padding: 20px;
         }
 
-        /* main dashboard card */
-        .dashboard {
-            max-width: 1300px;
+        /* App Container */
+        .app-container {
+            max-width: 1600px;
             margin: 0 auto;
-            background: rgba(12, 25, 35, 0.65);
-            backdrop-filter: blur(12px);
-            border-radius: 56px;
-            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(90, 170, 200, 0.3);
-            overflow: hidden;
-            transition: all 0.2s;
         }
 
-        /* header area */
-        .dash-header {
-            background: #07161fe0;
-            padding: 20px 28px;
-            border-bottom: 2px solid #2c7da0;
+        /* Header */
+        .header {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
-            align-items: baseline;
-            gap: 15px;
+            align-items: center;
+            margin-bottom: 28px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #2d3a5e;
         }
-        .title h1 {
+        .logo-area h1 {
             font-size: 1.9rem;
-            background: linear-gradient(135deg, #C0E0FF, #79E0A2);
+            font-weight: 700;
+            background: linear-gradient(135deg, #C0E0FF, #7AA9FF);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.3px;
         }
-        .title p {
-            color: #9bc4d4;
-            font-size: 0.8rem;
-            margin-top: 5px;
-        }
-        .badge {
-            background: #1d4e64;
-            padding: 8px 16px;
-            border-radius: 60px;
-            color: #eafbff;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        /* menu tab bar */
-        .menu-tabs {
-            display: flex;
-            flex-wrap: wrap;
-            background: #0a1922;
-            padding: 0 20px;
-            gap: 8px;
-            border-bottom: 1px solid #2b5f7a;
-        }
-        .tab-btn {
-            background: transparent;
-            border: none;
-            padding: 14px 32px;
-            font-size: 1rem;
-            font-weight: 600;
-            color: #bcddff;
-            cursor: pointer;
-            transition: 0.15s;
-            border-radius: 40px 40px 0 0;
-            font-family: inherit;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .tab-btn i { font-style: normal; font-size: 1.3rem; }
-        .tab-btn:hover {
-            background: #1f4157;
-            color: white;
-        }
-        .tab-btn.active {
-            background: #0b2c3b;
-            color: #f9e45b;
-            border-bottom: 3px solid #f4c542;
-            box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
-        }
-
-        /* dashboard content area */
-        .dashboard-content {
-            padding: 24px 28px 32px;
-            min-height: 580px;
-        }
-        .tool-pane {
-            display: none;
-            animation: fadeSlide 0.2s ease;
-        }
-        .tool-pane.active-pane {
-            display: block;
-        }
-        @keyframes fadeSlide {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* embedded iframe style (no file paths shown) */
-        .iframe-container {
-            background: #010a10;
-            border-radius: 36px;
-            overflow: hidden;
-            box-shadow: 0 12px 28px black;
-            border: 1px solid #417e9e;
-            height: 65vh;
-            min-height: 500px;
-            width: 100%;
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: #fef9ea;
-        }
-
-        /* description under each tool */
-        .info-note {
-            margin-top: 18px;
-            text-align: center;
-            color: #94bbca;
+        .logo-area p {
             font-size: 0.85rem;
-            background: #02101770;
-            padding: 10px;
-            border-radius: 80px;
+            color: #8d9bc0;
+            margin-top: 6px;
+        }
+        .stats {
+            background: #111827;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            border: 1px solid #2d3a5e;
             backdrop-filter: blur(4px);
         }
+        .stats span {
+            font-weight: bold;
+            color: #7aa9ff;
+        }
 
-        /* responsive */
-        @media (max-width: 680px) {
-            .dash-header { flex-direction: column; align-items: center; text-align: center; }
-            .menu-tabs { justify-content: center; }
-            .tab-btn { padding: 10px 18px; font-size: 0.85rem; }
-            .iframe-container { min-height: 420px; }
-            .dashboard-content { padding: 18px; }
+        /* Layout: 2 columns (sidebar + player) on desktop */
+        .main-layout {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
         }
-        /* loading subtle */
-        .iframe-container iframe {
-            transition: all 0.1s;
+
+        /* CHANNEL MANAGER SIDEBAR */
+        .channel-sidebar {
+            flex: 1.2;
+            min-width: 280px;
+            background: #0f1422;
+            border-radius: 28px;
+            border: 1px solid #232a41;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 140px);
+            position: sticky;
+            top: 20px;
         }
-        footer {
-            text-align: center;
-            margin-top: 25px;
-            color: #5c8a9b;
+
+        .sidebar-header {
+            padding: 18px 20px;
+            background: #0b0f1a;
+            border-bottom: 1px solid #232a41;
+        }
+        .sidebar-header h2 {
+            font-size: 1.35rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .search-box {
+            margin-top: 12px;
+            width: 100%;
+            padding: 10px 14px;
+            background: #1a1f2e;
+            border: 1px solid #2f3a60;
+            border-radius: 44px;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+            transition: 0.2s;
+        }
+        .search-box:focus {
+            border-color: #7aa9ff;
+            box-shadow: 0 0 0 2px rgba(122,169,255,0.2);
+        }
+        .country-filter {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background: #1a1f2e;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 30px;
             font-size: 0.7rem;
+            font-weight: 500;
+            color: #b9c7e6;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-btn.active {
+            background: #3b5bdb;
+            color: white;
+            box-shadow: 0 2px 6px rgba(59,91,219,0.3);
+        }
+        .channel-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 10px;
+            scrollbar-width: thin;
+        }
+        .channel-item {
+            background: #111725;
+            margin-bottom: 8px;
+            border-radius: 18px;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .channel-item:hover {
+            background: #182035;
+            transform: translateX(3px);
+        }
+        .channel-item.active {
+            background: #1e2a4a;
+            border-left-color: #7aa9ff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .channel-info {
+            flex: 2;
+        }
+        .channel-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .channel-tag {
+            font-size: 0.65rem;
+            background: #2a3452;
+            padding: 2px 8px;
+            border-radius: 30px;
+            color: #bfd0ff;
+        }
+        .channel-meta {
+            font-size: 0.7rem;
+            color: #8b9acb;
+            margin-top: 4px;
+            display: flex;
+            gap: 12px;
+        }
+        .status-badge {
+            background: #2c384b;
+            border-radius: 40px;
+            padding: 2px 8px;
+            font-size: 0.6rem;
+            font-weight: 500;
+        }
+        .status-badge.geo {
+            background: #4a2f2f;
+            color: #ffacac;
+        }
+        .status-badge.not247 {
+            background: #4a3e2a;
+            color: #ffe1a0;
+        }
+
+        /* RIGHT PANEL (VIDEO PLAYER + INFO) */
+        .player-panel {
+            flex: 2.5;
+            min-width: 320px;
+            background: #0f1422;
+            border-radius: 28px;
+            border: 1px solid #232a41;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .video-wrapper {
+            background: #000000;
+            position: relative;
+            aspect-ratio: 16 / 9;
+            width: 100%;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #000;
+        }
+        .now-playing {
+            padding: 18px 22px;
+            background: linear-gradient(to bottom, #12182a, #0c1020);
+            border-bottom: 1px solid #232a41;
+        }
+        .now-playing h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .channel-details {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: #b4c2f0;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .player-controls {
+            padding: 14px 20px;
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            background: #0a0f1c;
+        }
+        .ctrl-btn {
+            background: #1f2a44;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ctrl-btn:hover {
+            background: #2f3e6e;
+        }
+        .ctrl-btn.danger {
+            background: #5a2e3e;
+        }
+        .message-area {
+            padding: 8px 20px 16px;
+            font-size: 0.8rem;
+            color: #9aa9d1;
+        }
+
+        @media (max-width: 800px) {
+            .channel-sidebar {
+                height: 450px;
+                position: relative;
+            }
+            body {
+                padding: 12px;
+            }
+            .now-playing h3 {
+                font-size: 1.1rem;
+            }
+        }
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1f2e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b5bdb;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
-<div class="dashboard">
-    <div class="dash-header">
-        <div class="title">
-            <h1>⚡ SMART WORKSPACE</h1>
-            <p>Chagua zana yako · Kisasa & Professional</p>
+<div class="app-container">
+    <div class="header">
+        <div class="logo-area">
+            <h1>🎬 Fee TV · Manager</h1>
+            <p>Live channels | South Africa · Tanzania · Kenya · Maldives</p>
         </div>
-        <div class="badge">
-            🧩 Integrated Apps | offline ready
+        <div class="stats">
+            📺 <span id="totalChannelsCount">0</span> channels • 🟢 <span id="onlineHint">stream ready</span>
         </div>
     </div>
 
-    <!-- MENU ya kufungua dashboards: Calculator, Sokoban, na future tools -->
-    <div class="menu-tabs" id="menuTabs">
-        <button class="tab-btn active" data-tool="calculator">
-            <i>🧮</i> Scientific Calculator
-        </button>
-        <button class="tab-btn" data-tool="sokoban">
-            <i>🎮</i> FEE is Sokoba
-        </button>
-        <button class="tab-btn" data-tool="stats">
-            <i>📊</i> Stat Analyzer
-        </button>
-    </div>
-
-    <div class="dashboard-content">
-        <!-- PANE: CALCULATOR (Scientific & Stats) -->
-        <div id="calculatorPane" class="tool-pane active-pane">
-            <div class="iframe-container">
-                <iframe srcdoc="
-                <!DOCTYPE html>
-                <html>
-                <head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>SciCalc Pro</title>
-                <style>
-                    *{box-sizing:border-box; user-select:none;} body{background:#0e1f29; margin:0; min-height:100vh; display:flex; justify-content:center; align-items:center; font-family:'Courier New',monospace; padding:18px;}
-                    .calc-card{max-width:540px; width:100%; background:#07161f; border-radius:42px; padding:20px; box-shadow:0 20px 35px black; border:1px solid #2c8faa;}
-                    .display{background:#030c11; border-radius:28px; padding:18px; margin-bottom:25px;}
-                    .expr{font-size:1.3rem; color:#9ad8ff; min-height:2rem; text-align:right; word-break:break-all;}
-                    .result{font-size:2.2rem; color:#f7e596; text-align:right; font-weight:bold; border-top:1px solid #2e6b7c; margin-top:10px; padding-top:8px;}
-                    .stats-panel{background:#05212b; border-radius:28px; padding:12px; margin-bottom:16px; display:flex; flex-wrap:wrap; gap:8px; justify-content:space-between; font-size:0.75rem;}
-                    .stat-val{color:#ffd966; font-weight:bold;}
-                    .buttons{display:grid; grid-template-columns:repeat(6,1fr); gap:8px;}
-                    button{background:#1d3f4d; border:none; padding:12px 0; border-radius:40px; color:white; font-weight:bold; cursor:pointer; font-family:monospace; transition:0.05s linear;}
-                    button:active{transform:scale(0.96);}
-                    .btn-op{background:#c97e2c;}
-                    .btn-func{background:#2e5f6b;}
-                    .btn-equal{background:#2b8c5e; grid-column:span 2;}
-                    .btn-clear{background:#922b3e;}
-                    @media(max-width:480px){button{font-size:0.7rem; padding:8px 0;}}
-                </style>
-                </head>
-                <body>
-                <div class='calc-card'>
-                    <div class='display'><div class='expr' id='exprDisplay'>0</div><div class='result' id='resultDisplay'>= 0</div></div>
-                    <div class='stats-panel'><span>📊 DATA: <span id='dataCount' class='stat-val'>0</span></span><span>📈 Σx: <span id='sumX' class='stat-val'>0</span></span><span>📉 Mean: <span id='meanVal' class='stat-val'>—</span></span><button id='addDataBtn' style='background:#2f6b47;padding:4px 12px;'>➕ ADD</button><button id='clearDataBtn' style='background:#6b3e2f;'>🗑 CLEAR</button></div>
-                    <div class='buttons' id='buttonsGrid'></div>
+    <div class="main-layout">
+        <!-- LEFT: CHANNEL MANAGER -->
+        <div class="channel-sidebar">
+            <div class="sidebar-header">
+                <h2>📡 Channel Manager</h2>
+                <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search channel...">
+                <div class="country-filter">
+                    <button data-filter="all" class="filter-btn active">All</button>
+                    <button data-filter="za" class="filter-btn">🇿🇦 SA</button>
+                    <button data-filter="tz" class="filter-btn">🇹🇿 Tanzania</button>
+                    <button data-filter="ke" class="filter-btn">🇰🇪 Kenya</button>
+                    <button data-filter="mv" class="filter-btn">🇲🇻 Maldives</button>
                 </div>
-                <script>
-                    let dataList=[], currentExpr='', lastResult=null;
-                    const exprDiv=document.getElementById('exprDisplay'), resDiv=document.getElementById('resultDisplay');
-                    const dataCountSpan=document.getElementById('dataCount'), sumXSpan=document.getElementById('sumX'), meanSpan=document.getElementById('meanVal');
-                    function evaluateSci(expr){
-                        try{ let p=expr.replace(/\\^/g,'**').replace(/π/g,'Math.PI').replace(/e\\b/g,'Math.E');
-                        p=p.replace(/sqrt\\(/g,'Math.sqrt(').replace(/sin\\(/g,'Math.sin(').replace(/cos\\(/g,'Math.cos(').replace(/tan\\(/g,'Math.tan(').replace(/ln\\(/g,'Math.log(').replace(/log10\\(/g,'Math.log10(');
-                        p=p.replace(/(\\d+(?:\\.\\d+)?)!|\\(([^()]+)\\)!/g,(m,num,paren)=>{ let v=num?parseFloat(num):evaluateSci(paren); if(v<0||!Number.isInteger(v))return NaN; let f=1; for(let i=2;i<=v;i++)f*=i; return f; });
-                        p=p.replace(/(\\d+)%/g,(m,n)=>`(${parseFloat(n)}/100)`).replace(/(\\d)(\\()/g,'$1*$2');
-                        let fn=new Function('return ('+p+')'); let res=fn(); return isNaN(res)||!isFinite(res)?NaN:res;
-                        }catch(e){return NaN;}
-                    }
-                    function updateUI(){ exprDiv.innerText=currentExpr===''?'0':currentExpr; if(lastResult!==null && isFinite(lastResult)) resDiv.innerText='= '+lastResult.toFixed(8); else if(lastResult===null) resDiv.innerText='= '; else resDiv.innerText='= Error'; }
-                    function compute(){ if(currentExpr.trim()===''){lastResult=null; updateUI();return;} let val=evaluateSci(currentExpr); if(isNaN(val)) lastResult=NaN; else lastResult=val; updateUI();}
-                    function append(v){ if(currentExpr==='0' && /[\\d\\.]/.test(v) && v!=='.') currentExpr=v; else currentExpr+=v; compute();}
-                    function clearAll(){ currentExpr=''; lastResult=null; updateUI();}
-                    function back(){ currentExpr=currentExpr.slice(0,-1); compute();}
-                    function updateStatsUI(){ let n=dataList.length; dataCountSpan.innerText=n; if(n===0){ sumXSpan.innerText='0'; meanSpan.innerText='—'; return;} let sum=dataList.reduce((a,b)=>a+b,0); let mean=sum/n; sumXSpan.innerText=sum.toFixed(4); meanSpan.innerText=mean.toFixed(5);}
-                    function addCurrentToStats(){ let val; if(lastResult!==null && isFinite(lastResult)) val=lastResult; else { let ev=evaluateSci(currentExpr); if(isNaN(ev)){ alert('Invalid number'); return;} val=ev; lastResult=ev; updateUI();} dataList.push(val); updateStatsUI();}
-                    function clearData(){ dataList=[]; updateStatsUI();}
-                    const btns=[{l:'sin',a:'sin('},{l:'cos',a:'cos('},{l:'tan',a:'tan('},{l:'ln',a:'ln('},{l:'log',a:'log10('},{l:'AC',a:'clear'},{l:'√',a:'sqrt('},{l:'^',a:'^'},{l:'π',a:'π'},{l:'e',a:'e'},{l:'n!',a:'!'},{l:'⌫',a:'back'},{l:'7',a:'7'},{l:'8',a:'8'},{l:'9',a:'9'},{l:'(',a:'('},{l:')',a:')'},{l:'%',a:'%'},{l:'4',a:'4'},{l:'5',a:'5'},{l:'6',a:'6'},{l:'*',a:'*'},{l:'/',a:'/'},{l:'x̄',a:'mean'},{l:'1',a:'1'},{l:'2',a:'2'},{l:'3',a:'3'},{l:'+',a:'+'},{l:'-',a:'-'},{l:'Σx',a:'sum'},{l:'0',a:'0'},{l:'.',a:'.'},{l:'=',a:'equal'},{l:'σ',a:'std'},{l:'N',a:'count'},{l:'CLEAR',a:'clearData'}];
-                    const container=document.getElementById('buttonsGrid');
-                    btns.forEach(b=>{ let btn=document.createElement('button'); btn.innerText=b.l; if(b.l==='=') btn.classList.add('btn-equal'); else if(['+','-','*','/','^','%'].includes(b.l)) btn.classList.add('btn-op'); else if(['AC','⌫'].includes(b.l)) btn.classList.add('btn-clear'); else if(b.l!=='0' && b.l!=='1') btn.classList.add('btn-func'); btn.onclick=()=>{ if(b.a==='clear') clearAll(); else if(b.a==='back') back(); else if(b.a==='equal') compute(); else if(b.a==='mean'){ if(dataList.length){ let m=dataList.reduce((a,b)=>a+b,0)/dataList.length; append(m.toString());} else alert('No data');} else if(b.a==='sum'){ if(dataList.length){ let s=dataList.reduce((a,b)=>a+b,0); append(s.toString());} else alert('No data');} else if(b.a==='std'){ if(dataList.length>0){ let mean=dataList.reduce((a,b)=>a+b,0)/dataList.length; let varian=dataList.reduce((acc,x)=>acc+(x-mean)**2,0)/dataList.length; append(Math.sqrt(varian).toString());} else alert('No data');} else if(b.a==='count') append(dataList.length.toString()); else if(b.a==='clearData') clearData(); else append(b.a); }; container.appendChild(btn); });
-                    document.getElementById('addDataBtn').onclick=addCurrentToStats; document.getElementById('clearDataBtn').onclick=clearData;
-                    clearAll(); updateStatsUI();
-                <\/script>
-                </body>
-                </html>
-                " title="Scientific Calculator" loading="lazy"></iframe>
             </div>
-            <div class="info-note">✨ Kikokotoo cha kisayansi + takwimu · kwa matumizi ya haraka ✨</div>
+            <div class="channel-list" id="channelListContainer">
+                <!-- dynamic list from JS -->
+                <div style="text-align:center; padding: 40px;">Loading channels...</div>
+            </div>
         </div>
 
-        <!-- PANE: FEE is SOKOBA (puzzle game) -->
-        <div id="sokobanPane" class="tool-pane">
-            <div class="iframe-container">
-                <iframe srcdoc="
-                <!DOCTYPE html>
-                <html>
-                <head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Sokoban Pro</title>
-                <style> *{box-sizing:border-box;} body{background:#1c3f2a; display:flex; justify-content:center; align-items:center; min-height:100vh; font-family:monospace; margin:0; padding:20px;} .game-box{background:#0f281d; border-radius:48px; padding:20px; max-width:650px; width:100%; box-shadow:0 20px 30px black;} .top-bar{display:flex; justify-content:space-between; margin-bottom:15px; color:#ffe2a4;} canvas{background:#386a4a; border-radius:24px; width:100%; height:auto; cursor:pointer;} .controls{display:flex; justify-content:center; gap:20px; margin:20px 0 10px;} button{background:#b8762e; border:none; font-size:1.6rem; padding:8px 20px; border-radius:40px; font-weight:bold; color:white;} button:active{transform:scale(0.96);} .info{margin-top:12px; text-align:center; color:#efe3b0;}</style>
-                </head>
-                <body><div class='game-box'><div class='top-bar'><span>📦 Level <span id='lvlNum'>1</span>/<span id='totalLvl'>3</span></span><span>🔄 Moves: <span id='moveCount'>0</span></span><button id='resetBtn'>⟳ Reset</button></div><canvas id='gameCanvas' width='400' height='400'></canvas><div class='controls'><button data-dir='up'>⬆️</button><button data-dir='left'>⬅️</button><button data-dir='down'>⬇️</button><button data-dir='right'>➡️</button></div><div class='info'>🐾 FEE is SOKOBA · Push crates onto stars 🐾</div></div><script>
-                const TILE={FLOOR:0,WALL:1,GOAL:2,CRATE:3,PLAYER:4,CRATE_ON_GOAL:5,PLAYER_ON_GOAL:6};
-                const levels=[{w:7,h:7,map:[[1,1,1,1,1,1,1],[1,0,0,0,0,0,1],[1,0,2,0,3,0,1],[1,0,0,4,0,0,1],[1,0,3,0,2,0,1],[1,0,0,0,0,0,1],[1,1,1,1,1,1,1]]},{w:8,h:8,map:[[1,1,1,1,1,1,1,1],[1,0,0,0,1,0,0,1],[1,0,3,0,1,2,0,1],[1,0,0,4,0,0,0,1],[1,0,1,0,3,0,0,1],[1,0,2,0,1,0,0,1],[1,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1]]},{w:8,h:8,map:[[1,1,1,1,1,1,1,1],[1,0,0,2,0,3,0,1],[1,0,1,0,1,0,0,1],[1,3,0,4,0,0,2,1],[1,0,1,0,1,0,0,1],[1,0,0,0,0,3,0,1],[1,0,2,0,0,0,0,1],[1,1,1,1,1,1,1,1]]}];
-                let curLvl=0, board=[], player={x:0,y:0}, moves=0, gameWin=false;
-                const canvas=document.getElementById('gameCanvas'), ctx=canvas.getContext('2d');
-                const lvlNumSpan=document.getElementById('lvlNum'), totalSpan=document.getElementById('totalLvl'), movesSpan=document.getElementById('moveCount');
-                totalSpan.innerText=levels.length;
-                function loadLevel(idx){ let l=levels[idx]; let h=l.h,w=l.w; let newBoard=Array(h).fill().map(()=>Array(w).fill(0)); for(let r=0;r<h;r++) for(let c=0;c<w;c++){ newBoard[r][c]=l.map[r][c]; if(newBoard[r][c]===TILE.PLAYER || newBoard[r][c]===TILE.PLAYER_ON_GOAL) player={x:c,y:r}; } board=newBoard; moves=0; gameWin=false; updateMoves(); draw(); }
-                function updateMoves(){ movesSpan.innerText=moves; lvlNumSpan.innerText=curLvl+1; }
-                function draw(){ let h=board.length,w=board[0].length; let sz=Math.min(480/w,480/h); canvas.width=w*sz; canvas.height=h*sz; ctx.clearRect(0,0,canvas.width,canvas.height); for(let y=0;y<h;y++) for(let x=0;x<w;x++){ let t=board[y][x]; let xp=x*sz,yp=y*sz; if(t===TILE.WALL){ ctx.fillStyle='#4a3727'; ctx.fillRect(xp,yp,sz,sz); }else{ let isGoal=(t===TILE.GOAL||t===TILE.CRATE_ON_GOAL||t===TILE.PLAYER_ON_GOAL); ctx.fillStyle=isGoal?'#5f4c6b':'#528a5e'; ctx.fillRect(xp,yp,sz,sz); if(isGoal){ ctx.fillStyle='#f7d44a'; ctx.beginPath(); ctx.arc(xp+sz/2,yp+sz/2,sz*0.2,0,Math.PI*2); ctx.fill(); } } if(t===TILE.CRATE){ ctx.fillStyle='#d9a13b'; ctx.fillRect(xp+5,yp+5,sz-10,sz-10); }else if(t===TILE.CRATE_ON_GOAL){ ctx.fillStyle='#ffbc6e'; ctx.fillRect(xp+6,yp+6,sz-12,sz-12); }else if(t===TILE.PLAYER){ ctx.fillStyle='#9fd98b'; ctx.beginPath(); ctx.ellipse(xp+sz/2,yp+sz*0.4,sz*0.2,sz*0.25,0,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#1f471f'; ctx.beginPath(); ctx.arc(xp+sz*0.35,yp+sz*0.35,sz*0.07,0,Math.PI*2); ctx.arc(xp+sz*0.65,yp+sz*0.35,sz*0.07,0,Math.PI*2); ctx.fill(); }else if(t===TILE.PLAYER_ON_GOAL){ ctx.fillStyle='#ecd67a'; ctx.beginPath(); ctx.ellipse(xp+sz/2,yp+sz*0.4,sz*0.2,sz*0.25,0,0,Math.PI*2); ctx.fill(); } } }
-                function move(dx,dy){ if(gameWin)return; let nx=player.x+dx,ny=player.y+dy; if(ny<0||ny>=board.length||nx<0||nx>=board[0].length)return; let t=board[ny][nx]; if(t===TILE.WALL)return; if(t===TILE.FLOOR||t===TILE.GOAL){ let oldTile=board[player.y][player.x]; board[player.y][player.x]=(oldTile===TILE.PLAYER_ON_GOAL?TILE.GOAL:TILE.FLOOR); board[ny][nx]=(t===TILE.GOAL?TILE.PLAYER_ON_GOAL:TILE.PLAYER); player={x:nx,y:ny}; moves++; updateMoves(); draw(); checkVictory(); return; } if(t===TILE.CRATE||t===TILE.CRATE_ON_GOAL){ let pushX=nx+dx,pushY=ny+dy; if(pushY<0||pushY>=board.length||pushX<0||pushX>=board[0].length)return; let pushTile=board[pushY][pushX]; if(pushTile===TILE.FLOOR||pushTile===TILE.GOAL){ let wasCrateOnGoal=(t===TILE.CRATE_ON_GOAL); board[pushY][pushX]= (pushTile===TILE.GOAL?TILE.CRATE_ON_GOAL:TILE.CRATE); board[ny][nx]=(wasCrateOnGoal?TILE.PLAYER_ON_GOAL:TILE.PLAYER); let oldPlayer=board[player.y][player.x]; board[player.y][player.x]=(oldPlayer===TILE.PLAYER_ON_GOAL?TILE.GOAL:TILE.FLOOR); player={x:nx,y:ny}; moves++; updateMoves(); draw(); checkVictory(); } } }
-                function checkVictory(){ let goalCount=0,crateOnGoal=0; for(let row of board)for(let v of row){ if(v===TILE.GOAL||v===TILE.PLAYER_ON_GOAL) goalCount++; if(v===TILE.CRATE_ON_GOAL) crateOnGoal++; } let remainingCrates=0; for(let row of board)for(let v of row) if(v===TILE.CRATE) remainingCrates++; if(crateOnGoal===goalCount && goalCount>0 && remainingCrates===0){ gameWin=true; setTimeout(()=>{ if(curLvl+1<levels.length){ alert('Level complete! Next stage'); curLvl++; loadLevel(curLvl); draw(); }else alert('🏆 YOU WIN! GRAND MASTER 🏆'); },50); } }
-                function resetLevel(){ loadLevel(curLvl); draw(); }
-                document.querySelectorAll('[data-dir]').forEach(btn=>btn.onclick=()=>{ let dir=btn.getAttribute('data-dir'); if(dir==='up') move(0,-1); else if(dir==='down') move(0,1); else if(dir==='left') move(-1,0); else move(1,0); }); document.getElementById('resetBtn').onclick=resetLevel; window.addEventListener('keydown',e=>{ let k=e.key; if(k==='ArrowUp')move(0,-1); else if(k==='ArrowDown')move(0,1); else if(k==='ArrowLeft')move(-1,0); else if(k==='ArrowRight')move(1,0); e.preventDefault(); }); loadLevel(0); draw();
-                <\/script>
-                </body></html>
-                " title="Sokoban Puzzle" loading="lazy"></iframe>
+        <!-- RIGHT: VIDEO PLAYER & INFO -->
+        <div class="player-panel">
+            <div class="video-wrapper">
+                <video id="liveVideo" controls autoplay muted playsinline poster="https://placehold.co/1920x1080/0f1422/7aa9ff?text=Fee+TV+Player">
+                    Your browser does not support HTML5 video.
+                </video>
             </div>
-            <div class="info-note">🎮 Bonyeza vitufe au Arrow Keys · Sukuma makontena kwenye nyota 🎮</div>
-        </div>
-
-        <!-- PANE: STAT ANALYZER (demo data insights) -->
-        <div id="statsPane" class="tool-pane">
-            <div class="iframe-container">
-                <iframe srcdoc="
-                <!DOCTYPE html>
-                <html><head><meta charset='UTF-8'><title>Data Analyzer</title><style>body{background:#101f2a;font-family:system-ui;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:20px;}.card{background:#06212e;border-radius:48px;padding:28px;max-width:500px;width:100%;color:#d9ecf5;}.input-group{display:flex;gap:12px;margin:20px 0;flex-wrap:wrap;} input{flex:1;padding:14px;border-radius:60px;border:none;background:#1e4457;color:white;}.btn{background:#cb7b2c;border:none;padding:12px 18px;border-radius:40px;font-weight:bold;cursor:pointer;} .stat-row{background:#04161f;margin:8px 0;padding:12px;border-radius:28px;display:flex;justify-content:space-between;} .value{color:#f6c358;font-weight:bold;}</style></head>
-                <body><div class='card'><h2>📈 Stat Analyzer</h2><p>Weka namba (kwa comma au space) na uchambue takwimu</p><div class='input-group'><input type='text' id='dataInput' placeholder='mfano: 12, 15, 18, 22'><button class='btn' id='analyzeBtn'>Chambua</button><button class='btn' id='sampleBtn'>Sample Data</button></div><div id='results'></div></div><script>
-                function analyze(str){ let nums=str.split(/[ ,]+/).filter(x=>x.trim()!=='').map(Number).filter(v=>!isNaN(v)); if(nums.length===0) return null; let sum=nums.reduce((a,b)=>a+b,0), mean=sum/nums.length, sorted=[...nums].sort((a,b)=>a-b), median=sorted[Math.floor(nums.length/2)], variance=nums.reduce((a,b)=>a+(b-mean)**2,0)/nums.length, std=Math.sqrt(variance); return {count:nums.length, sum:sum.toFixed(4), mean:mean.toFixed(4), median:median.toFixed(4), std:std.toFixed(4), min:Math.min(...nums), max:Math.max(...nums)}; }
-                function display(){ let input=document.getElementById('dataInput').value; let stats=analyze(input); let div=document.getElementById('results'); if(!stats){ div.innerHTML='<div class=\"stat-row\">⚠️ Ingiza namba halali</div>'; return; } div.innerHTML=`<div class='stat-row'><span>📋 Idadi (N):</span><span class='value'>${stats.count}</span></div><div class='stat-row'><span>📊 Jumla (Σx):</span><span class='value'>${stats.sum}</span></div><div class='stat-row'><span>🧮 Wastani (Mean):</span><span class='value'>${stats.mean}</span></div><div class='stat-row'><span>⚡ Mkengeuko (σ):</span><span class='value'>${stats.std}</span></div><div class='stat-row'><span>🎯 Mediani:</span><span class='value'>${stats.median}</span></div><div class='stat-row'><span>📉 Min / Max:</span><span class='value'>${stats.min} / ${stats.max}</span></div>`; }
-                document.getElementById('analyzeBtn').onclick=display; document.getElementById('sampleBtn').onclick=()=>{ document.getElementById('dataInput').value='24, 56, 78, 45, 92, 33, 67'; display(); }; display();
-                <\/script></body></html>
-                " title="Stat Analyzer" loading="lazy"></iframe>
+            <div class="now-playing">
+                <h3>
+                    <span id="currentChannelName">Select a channel</span>
+                    <span id="currentBadge" class="status-badge">⚡ Ready</span>
+                </h3>
+                <div class="channel-details" id="currentChannelMeta">
+                    <span>🌍 Country: --</span>
+                    <span>📺 Quality: --</span>
+                    <span>⏱️ Status: --</span>
+                </div>
             </div>
-            <div class="info-note">📉 Changanua data yoyote · Takwimu za haraka (wastani, tofauti, mediani)</div>
+            <div class="player-controls">
+                <button id="reloadStreamBtn" class="ctrl-btn">🔄 Reload Stream</button>
+                <button id="stopStreamBtn" class="ctrl-btn danger">⏹️ Stop</button>
+                <button id="fullscreenBtn" class="ctrl-btn">⛶ Fullscreen</button>
+            </div>
+            <div class="message-area" id="infoMsg">
+                💡 Tip: Click any channel to start playback. Some streams may be geo-blocked or not 24/7.
+            </div>
         </div>
     </div>
-    <footer>🔧 Zana zote zimejengewa ndani · hakuna faili za nje · Bofya menyu kufungua dashboards</footer>
 </div>
 
 <script>
-    // Tab switching logic : kufungua dashboard bila kuonyesha html file
-    const tabs = document.querySelectorAll('.tab-btn');
-    const panes = {
-        calculator: document.getElementById('calculatorPane'),
-        sokoban: document.getElementById('sokobanPane'),
-        stats: document.getElementById('statsPane')
-    };
+    // --------------------------------------------------------------
+    // PARSING M3U DATA (embedded from your given content)
+    // --------------------------------------------------------------
+    const rawM3U = `#EXTINF:-1 tvg-id="BOKTV.za@SD",BOKTV (720p) [Not 24/7]
+https://livestream2.bokradio.co.za/hls/Bok5c.m3u8
+#EXTINF:-1 tvg-id="GNFTV.za@SD",GNF TV (576p)
+https://oqgdrb8my4rm-hls-live.5centscdn.com/GNF02/bcea197d8b00f79cb716c6288a861000.sdp/playlist.m3u8
+#EXTINF:-1 tvg-id="HomebaseTV.za@SD",Homebase TV (576p) [Not 24/7]
+https://webstreaming-2.viewmedia.tv/web_022/Stream/playlist.m3u8
+#EXTINF:-1 tvg-id="HomebaseTV.za@SD",Homebase TV (480p)
+https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_022/Stream/playlist.m3u8
+#EXTINF:-1 tvg-id="HopeChannelAfrica.za@SD",Hope Channel Africa (1080p)
+https://jstre.am/live/jsl:i1onRBELcGV.m3u8
+#EXTINF:-1 tvg-id="LN24SA.za@SD",LN24SA (1080p)
+https://cdnstack.internetmultimediaonline.org/ln24/ln24.stream/playlist.m3u8
+#EXTINF:-1 tvg-id="LoveworldSAT.ng@SD",LoveworldSAT (1080p)
+https://cdnstack.internetmultimediaonline.org/lwsat/lwsat.stream/index.m3u8
+#EXTINF:-1 tvg-id="LoveworldSAT.ng@SD",LoveworldSAT
+https://cdnstack.internetmultimediaonline.org/lwsat/lwsat.stream/chunklist.m3u8
+#EXTINF:-1 tvg-id="NuViewTV.za@SD",NuView TV (360p)
+https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_002/Stream/playlist.m3u8
+#EXTINF:-1 tvg-id="RedemptionTelevisionMinistry.za@SD",Redemption TV Ministry (720p)
+https://live.nixsat.com/play/rtm/index.m3u8
+#EXTINF:-1 tvg-id="RLWTV.za@SD",RLW TV (576p) [Not 24/7]
+https://webstreaming-8.viewmedia.tv/web_119/Stream/playlist.m3u8
+#EXTINF:-1 tvg-id="ROVTV.za@SD",ROV TV (576p)
+https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_012/Stream/playlist.m3u8
+#EXTINF:-1 tvg-id="SABC1.za@SD",SABC 1 (720p) [Geo-blocked]
+https://sabconeta.cdn.mangomolo.com/sabc1/smil:sabc1.stream.smil/master.m3u8
+#EXTINF:-1 tvg-id="SABC2.za@SD",SABC 2 [Geo-blocked]
+https://sabctwota.cdn.mangomolo.com/sabc2/smil:sabc2.stream.smil/master.m3u8
+#EXTINF:-1 tvg-id="SABC3.za@SD",SABC 3 [Geo-blocked]
+https://sabctreta.cdn.mangomolo.com/sabc3/smil:sabc3.stream.smil/master.m3u8
+#EXTINF:-1 tvg-id="SABCLehae.za@SD",SABC Lehae [Geo-blocked]
+https://sabctretalh.cdn.mangomolo.com/lehae/smil:lehae.stream.smil/master.m3u8
+#EXTINF:-1 tvg-id="SABCNews.za@SD",SABC News (720p) [Geo-blocked]
+https://sabconetanw.cdn.mangomolo.com/news/smil:news.stream.smil/master.m3u8
+#EXTINF:-1 tvg-id="SeraphimTV.za@SD",Seraphim TV [Not 24/7]
+https://restream.churchtv247.co.za/Apostle/Hggc@24/1.m3u8
+#EXTINF:-1 tvg-id="WildEarth.za@SD",WildEarth (1080p) [Geo-blocked]
+https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg01290-wildearthmediap-wildearth-samsungnl/playlist.m3u8
+#EXTINF:-1 tvg-id="WildEarth.za@SD",WildEarth (1080p) [Geo-blocked]
+https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg01290-wildearthmediap-wildearth-samsungse/playlist.m3u8
+#EXTINF:-1 tvg-id="WildEarth.za@SD",WildEarth (1080p)
+https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg01290-wildearth-oando/playlist.m3u8
+#EXTINF:-1 tvg-id="WildEarth.za@SD",WildEarth (1080p)
+https://wildearth-ono.amagi.tv/playlist/amg01290-wildearth-oando/playlist.m3u8
+#EXTINF:-1 tvg-id="WildEarth.za@SD",WildEarth (1080p)
+https://wildearth-xumo.amagi.tv/master.m3u8
+#EXTM3U
+#EXTINF:-1 tvg-id="DodomaTV.tz@SD",Dodoma TV (360p) [Not 24/7]
+https://goliveafrica.media:9998/live/625965017ed69/index.m3u8
+#EXTINF:-1 tvg-id="IBNTV.tz@SD",IBN TV (480p)
+http://138.68.138.119:8080/live/5a8993709ea19/index.m3u8
+#EXTINF:-1 tvg-id="IBNTVAfrica.tz@SD",IBN TV Africa (720p)
+http://68.183.41.209:8080/live/5d9a537c64b9c/index.m3u8
+#EXTINF:-1 tvg-id="TanzaniaSafariChannel.tz@SD",Tanzania Safari Channel (576p)
+https://stream-134630.castr.net/5fe35eae8c53540cab83659a/live_31dabe40323511f08b8efff0016f3b67/index.m3u8
+#EXTINF:-1 tvg-id="TBC1.tz@HD",TBC1 (1080p)
+https://stream-134630.castr.net/5fe35eae8c53540cab83659a/live_67aeec90584911f1ab60174d68f7c06e/index.fmp4.m3u8
+#EXTINF:-1 tvg-id="TBC2.tz@HD",TBC2 (1080p)
+https://stream-134630.castr.net/5fe35eae8c53540cab83659a/live_17ad3c50323511f08f79733d2dd68583/index.fmp4.m3u8
+#EXTINF:-1 tvg-id="Channel13.mv@SD",Channel 13 (720p) [Not 24/7]
+https://stream.theyraonline.com/live/channel13@live/index.m3u8
+#EXTINF:-1 tvg-id="MaldivesTV.mv@SD",Maldives TV (720p)
+https://lana.psm.mv/live/mtv.m3u8
+#EXTINF:-1 tvg-id="MMTV.mv@SD",MMTV (1080p)
+https://sendlive.online/hls/mmtv.m3u8
+#EXTINF:-1 tvg-id="Munnaaru.mv@SD",Munnaaru
+https://customer-ujex1meek7koqd9x.cloudflarestream.com/6a46f90ca384c7419efdbef3ff1892a9/manifest/video.m3u8
+#EXTINF:-1 tvg-id="NTV.mv@SD",NTV
+https://sstv.ssplay.mv/hls/local-channel/ntv-e3d4300b49c8c901e9339174215d7580/index.m3u8
+#EXTINF:-1 tvg-id="PSMNews.mv@SD",PSM News
+https://customer-ujex1meek7koqd9x.cloudflarestream.com/21262545317dadfa20dab4f9bd37c7c2/manifest/video.m3u8
+#EXTINF:-1 tvg-id="RaajjeTV.mv@SD",Raajje TV
+https://raajjetv.yarr-myn.workers.dev/RaajjeTv.m3u8
+#EXTINF:-1 tvg-id="SSTV.mv@SD",SSTV (1080p)
+https://sstv.ssplay.mv/hls/sstv-live/index.m3u8
+#EXTINF:-1 tvg-id="TVMaldives.mv@SD",TV Maldives
+https://customer-ujex1meek7koqd9x.cloudflarestream.com/9e93379c0d46ee588b99263d95bd9c42/manifest/video.m3u8
+#EXTINF:-1 tvg-id="VTV.mv@SD",VTV (1080p) [Not 24/7]
+https://vtvstream.vnews.mv/vtvlive/vmedia/playlist.m3u8
+#EXTINF:-1 tvg-id="VTV.mv@SD",VTV
+https://sstv.ssplay.mv/hls/local-channel/vtv-7a0f24809c234ea78d972b1f336ac1b9/index.m3u8
+#EXTINF:-1 tvg-id="YES.mv@SD",YES
+https://customer-ujex1meek7koqd9x.cloudflarestream.com/4f0b316cdb0fbb7f8ca93860ed11d38b/manifest/video.m3u8
+#EXTINF:-1 tvg-id="3StonesTV.ke@SD",3 Stones TV (240p) [Not 24/7]
+https://goliveafrica.media:9998/live/64d21e682fd26/index.m3u8
+#EXTINF:-1 tvg-id="AviationTV.ke@SD",Aviation TV (480p)
+http://streamer02.nbo1.angani.co:1935/aviationtv/myStream/playlist.m3u8
+#EXTINF:-1 tvg-id="BTLTV.ke@SD",BTL TV (720p) [Not 24/7]
+https://goliveafrica.media:9998/live/638da5440743c/index.m3u8
+#EXTINF:-1 tvg-id="ClergyTV.ke@SD",Clergy TV (720p) [Not 24/7]
+https://goliveafrica.media:9998/live/650452cf2ddb2/index.m3u8
+#EXTINF:-1 tvg-id="CMTvKenya.ke@SD",CMTv Kenya (576p) [Not 24/7]
+https://goliveafrica.media:9998/live/64ede813cfe1a/index.m3u8
+#EXTINF:-1 tvg-id="EBNTV.ke@SD",EBN TV (720p) [Not 24/7]
+https://goliveafrica.media:9998/live/65d8475d1e6cb/index.m3u8
+#EXTINF:-1 tvg-id="ElevateTV.ke@SD",Elevate TV (720p) [Not 24/7]
+https://goliveafrica.media:9998/live/64a98a7eac12a/index.m3u8
+#EXTINF:-1 tvg-id="GBSTV.ke@SD",GBS TV (720p) [Not 24/7]
+https://goliveafrica.media:9998/live/647460ac1ddd6/index.m3u8
+#EXTINF:-1 tvg-id="GTNTV.ke@SD",GTN TV (1080p) [Not 24/7]
+https://goliveafrica.media:9998/live/644e07abdc1d3/index.m3u8
+#EXTINF:-1 tvg-id="HeavenBoundTV.ke@SD",Heaven Bound TV (480p) [Not 24/7]
+https://goliveafrica.media:9998/live/62580b337c021/index.m3u8
+#EXTINF:-1 tvg-id="HisGraceTV.ke@SD",His Grace TV (480p) [Not 24/7]
+https://goliveafrica.media:9998/live/6593c35f9c090/index.m3u8
+#EXTINF:-1 tvg-id="HLCTV.ke@SD",HLC TV (480p) [Not 24/7]
+https://goliveafrica.media:9998/live/627d06e001aaf/index.m3u8
+#EXTINF:-1 tvg-id="ICTV.ke@SD",ICTV (480p) [Not 24/7]
+https://goliveafrica.media:9998/live/659a7f33bed3f/index.m3u8
+#EXTINF:-1 tvg-id="JCMTV.ke@SD",JCM TV (720p) [Not 24/7]
+https://goliveafrica.media:9998/live/646c92d07b16c/index.m3u8
+#EXTINF:-1 tvg-id="KassTV.ke@SD",Kass TV (720p) [Not 24/7]
+https://goliveafrica.media:9998/live/62f643cdca8cf/index.m3u8
+#EXTINF:-1 tvg-id="LolweTV.ke@SD",Lolwe TV (576p) [Not 24/7]
+https://goliveafrica.media:9998/live/62580e144eb43/index.m3u8
+#EXTINF:-1 tvg-id="LuyaaTV.ke@SD",Luyaa TV (480p) [Not 24/7]
+https://goliveafrica.media:9998/live/659e7c6432815/index.m3u8
+#EXTINF:-1 tvg-id="MasharikiTV.ke@SD",Mashariki TV (720p) [Not 24/7]
+https://goliveafrica.media:9998/live/634adc0806f2b/index.m3u8
+#EXTINF:-1 tvg-id="MERUTV.ke@SD",MERU TV (720p) [Not 24/7]
+https://goliveafrica.media:9998/live/628e5c1991061/index.m3u8
+#EXTINF:-1 tvg-id="MorningCloudTV.ke@SD",Morning Cloud TV
+https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_026/Stream/playlist.m3u8
+#EXTINF:-1 tvg-id="MuugiTV.ke@SD",Muugi TV (480p) [Not 24/7]
+https://goliveafrica.media:9998/live/62b3ffb71a3d6/index.m3u8
+#EXTINF:-1 tvg-id="MwangazaTV.ke@SD",Mwangaza TV (720p) [Not 24/7]
+https://goliveafrica.media:9998/live/6516be24a6bac/index.m3u8
+#EXTINF:-1 tvg-id="NdurumeniTV.ke@SD",Ndurumeni TV (480p) [Not 24/7]
+https://goliveafrica.media:9998/live/6389d571d20af/index.m3u8
+#EXTINF:-1 tvg-id="NiceTVKenya.ke@SD",Nice TV Kenya (720p) [Not 24/7]
+https://goliveafrica.media:9998/live/64ada04aa7678/index.m3u8
+#EXTINF:-1 tvg-id="NjataTV.ke@SD",Njata TV (576p) [Not 24/7]
+https://goliveafrica.media:9998/live/625816e585a2b/index.m3u8
+#EXTINF:-1 tvg-id="PillarTV.ke@SD",Pillar TV (720p) [Not 24/7]
+https://goliveafrica.media:9998/live/627e198474bd1/index.m3u8
+#EXTINF:-1 tvg-id="RaiaTV.ke@SD",Raia TV (720p) [Not 24/7]
+https://goliveafrica.media:9998/live/64873b6222c93/index.m3u8
+#EXTINF:-1 tvg-id="RamogiTV.ke@SD",Ramogi TV (720p)
+https://citizentv.castr.com/5ea49827ff3b5d7b22708777/live_9b761ff063f511eca12909b8ef1524b4/index.m3u8
+#EXTINF:-1 tvg-id="SayareTV.ke@SD",Sayare TV (720p) [Not 24/7]
+https://goliveafrica.media:9998/live/636dedfa327d7/index.m3u8
+#EXTINF:-1 tvg-id="UrejeshoTVAfrica.ke@SD",Urejesho TV Africa (360p) [Not 24/7]
+https://goliveafrica.media:9998/live/64a26e4dd21a3/index.m3u8
+#EXTINF:-1 tvg-id="UTV.ke@SD",UTV (240p) [Not 24/7]
+https://goliveafrica.media:9998/live/62580d78ac508/index.m3u8
+#EXTINF:-1 tvg-id="YOUNIBMediaTV.ke@SD",YOUNIB Media TV (720p) [Not 24/7]
+https://goliveafrica.media:9998/live/6257fbe7383d6/index.m3u8`;
 
-    function activateTool(toolId) {
-        // hide all panes
-        Object.values(panes).forEach(pane => pane.classList.remove('active-pane'));
-        // remove active class from all tabs
-        tabs.forEach(btn => btn.classList.remove('active'));
-        // show selected
-        if (panes[toolId]) panes[toolId].classList.add('active-pane');
-        const activeTab = document.querySelector(`.tab-btn[data-tool="${toolId}"]`);
-        if(activeTab) activeTab.classList.add('active');
+    function parseM3U(content) {
+        const lines = content.split(/\r?\n/);
+        const channels = [];
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i].trim();
+            if (line.startsWith('#EXTINF')) {
+                let url = null;
+                let nextIdx = i+1;
+                while (nextIdx < lines.length && !lines[nextIdx].trim().startsWith('#EXTINF') && lines[nextIdx].trim() !== '') {
+                    if (!lines[nextIdx].trim().startsWith('#') && lines[nextIdx].trim().startsWith('http')) {
+                        url = lines[nextIdx].trim();
+                        break;
+                    }
+                    nextIdx++;
+                }
+                if (!url && i+1 < lines.length && lines[i+1].trim().startsWith('http')) url = lines[i+1].trim();
+                if (url) {
+                    const nameMatch = line.match(/,([^,]+)$/);
+                    let name = nameMatch ? nameMatch[1].trim() : "Unknown";
+                    let quality = "SD";
+                    const tvgIdMatch = line.match(/tvg-id="([^"]+)"/);
+                    let countryCode = "unknown";
+                    if (tvgIdMatch) {
+                        const id = tvgIdMatch[1];
+                        if (id.includes('.za')) countryCode = 'za';
+                        else if (id.includes('.tz')) countryCode = 'tz';
+                        else if (id.includes('.ke')) countryCode = 'ke';
+                        else if (id.includes('.mv')) countryCode = 'mv';
+                        else if (id.includes('.ng')) countryCode = 'ng';
+                    }
+                    let isGeo = line.includes('Geo-blocked');
+                    let not247 = line.includes('Not 24/7');
+                    let qualMatch = name.match(/\((\d+p)\)/);
+                    if (qualMatch) quality = qualMatch[1];
+                    channels.push({ name, url, quality, country: countryCode, isGeoBlocked: isGeo, not247, rawLine: name });
+                }
+            }
+        }
+        return channels;
     }
 
-    tabs.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const tool = btn.getAttribute('data-tool');
-            if(tool === 'calculator') activateTool('calculator');
-            else if(tool === 'sokoban') activateTool('sokoban');
-            else if(tool === 'stats') activateTool('stats');
+    let masterChannels = parseM3U(rawM3U);
+    let filteredChannels = [...masterChannels];
+    let activeChannel = null;
+    let currentFilter = "all";
+    let searchTerm = "";
+
+    const videoPlayer = document.getElementById('liveVideo');
+    const channelContainer = document.getElementById('channelListContainer');
+    const searchInput = document.getElementById('searchInput');
+    const totalSpan = document.getElementById('totalChannelsCount');
+    const currentChannelNameSpan = document.getElementById('currentChannelName');
+    const currentMetaSpan = document.getElementById('currentChannelMeta');
+
+    function renderChannelList() {
+        let filtered = masterChannels.filter(ch => {
+            if (currentFilter !== 'all' && ch.country !== currentFilter) return false;
+            if (searchTerm && !ch.name.toLowerCase().includes(searchTerm.toLowerCase())) return false;
+            return true;
+        });
+        filteredChannels = filtered;
+        totalSpan.innerText = filtered.length;
+        if (filtered.length === 0) {
+            channelContainer.innerHTML = `<div style="padding: 30px; text-align:center;">🔍 No channels match</div>`;
+            return;
+        }
+        let html = '';
+        filtered.forEach((ch, idx) => {
+            const isActive = activeChannel && activeChannel.url === ch.url ? 'active' : '';
+            let badge = '';
+            if (ch.isGeoBlocked) badge = '<span class="status-badge geo">🌍 Geo-blocked</span>';
+            else if (ch.not247) badge = '<span class="status-badge not247">⏳ Not 24/7</span>';
+            else badge = '<span class="status-badge">🟢 Live</span>';
+            html += `
+                <div class="channel-item ${isActive}" data-url="${ch.url}" data-name="${escapeHtml(ch.name)}" data-quality="${ch.quality}" data-country="${ch.country}" data-geo="${ch.isGeoBlocked}" data-not247="${ch.not247}">
+                    <div class="channel-info">
+                        <div class="channel-name">${escapeHtml(ch.name)} ${badge}</div>
+                        <div class="channel-meta"><span>${ch.quality || 'SD'}</span><span>${ch.country.toUpperCase()}</span></div>
+                    </div>
+                </div>
+            `;
+        });
+        channelContainer.innerHTML = html;
+        document.querySelectorAll('.channel-item').forEach(el => {
+            el.addEventListener('click', (e) => {
+                const url = el.getAttribute('data-url');
+                const name = el.getAttribute('data-name');
+                const quality = el.getAttribute('data-quality');
+                const country = el.getAttribute('data-country');
+                const isGeo = el.getAttribute('data-geo') === 'true';
+                const not247 = el.getAttribute('data-not247') === 'true';
+                const channelObj = { url, name, quality, country, isGeoBlocked: isGeo, not247 };
+                playChannel(channelObj);
+            });
+        });
+    }
+
+    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+    function playChannel(channel) {
+        activeChannel = channel;
+        videoPlayer.pause();
+        videoPlayer.src = channel.url;
+        videoPlayer.load();
+        videoPlayer.play().catch(e => {
+            document.getElementById('infoMsg').innerHTML = `⚠️ Playback error: ${e.message}. Stream may be geo-blocked or offline.`;
+        });
+        currentChannelNameSpan.innerHTML = `${channel.name}`;
+        let badgeText = channel.isGeoBlocked ? '🌍 Geo-blocked' : (channel.not247 ? '⏳ Not 24/7' : '🟢 Live');
+        document.getElementById('currentBadge').innerHTML = badgeText;
+        currentMetaSpan.innerHTML = `<span>🌍 Country: ${channel.country.toUpperCase()}</span><span>📺 Quality: ${channel.quality || 'SD'}</span><span>⚡ Status: ${badgeText}</span>`;
+        document.getElementById('infoMsg').innerHTML = `🎬 Now playing: ${channel.name} — stream URL loaded. If no video, try reload or stream may be restricted.`;
+        renderChannelList();
+    }
+
+    document.getElementById('reloadStreamBtn').addEventListener('click', () => {
+        if (activeChannel) {
+            const oldUrl = activeChannel.url;
+            videoPlayer.src = oldUrl;
+            videoPlayer.load();
+            videoPlayer.play().catch(e => console.warn(e));
+            document.getElementById('infoMsg').innerHTML = `🔄 Reloading ${activeChannel.name} stream...`;
+        } else { document.getElementById('infoMsg').innerHTML = `❓ No active channel. Select one first.`; }
+    });
+    document.getElementById('stopStreamBtn').addEventListener('click', () => {
+        videoPlayer.pause();
+        videoPlayer.src = '';
+        currentChannelNameSpan.innerHTML = 'No stream active';
+        currentMetaSpan.innerHTML = `<span>🌍 Country: --</span><span>📺 Quality: --</span><span>⏱️ Status: Stopped</span>`;
+        document.getElementById('currentBadge').innerHTML = '⏹️ Stopped';
+        activeChannel = null;
+        renderChannelList();
+    });
+    document.getElementById('fullscreenBtn').addEventListener('click', () => {
+        if (videoPlayer.requestFullscreen) videoPlayer.requestFullscreen();
+        else if (videoPlayer.webkitRequestFullscreen) videoPlayer.webkitRequestFullscreen();
+    });
+    searchInput.addEventListener('input', (e) => { searchTerm = e.target.value; renderChannelList(); });
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.getAttribute('data-filter');
+            renderChannelList();
         });
     });
-    // default calculator active
-    activateTool('calculator');
+    renderChannelList();
+    if(masterChannels.length) playChannel(masterChannels[0]);
 </script>
 </body>
 </html>
