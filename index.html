@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Sci-Stat Calculator | Scientific & Statistics</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2a3a 0%, #0f1a24 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'Roboto', 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* calculator main panel */
+        .calculator {
+            max-width: 550px;
+            width: 100%;
+            background: #111c26;
+            border-radius: 48px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.08);
+            padding: 20px 18px 28px 18px;
+            transition: all 0.2s;
+        }
+
+        /* display area */
+        .display {
+            background: #03070c;
+            border-radius: 32px;
+            padding: 20px 22px;
+            margin-bottom: 25px;
+            box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(255, 255, 255, 0.05);
+        }
+
+        .expression {
+            font-size: 1.35rem;
+            font-family: 'Courier New', monospace;
+            color: #9cdbff;
+            min-height: 2.2rem;
+            word-break: break-all;
+            text-align: right;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .result {
+            font-size: 2.7rem;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #f0f9ff;
+            text-align: right;
+            word-break: break-word;
+            margin-top: 10px;
+            border-top: 1px dashed #2e4a62;
+            padding-top: 10px;
+            min-height: 5rem;
+        }
+
+        /* stats panel */
+        .stats-panel {
+            background: #07121b;
+            border-radius: 28px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            font-family: monospace;
+            border: 1px solid #2a4c6e;
+        }
+
+        .stat-badge {
+            background: #0a1924;
+            padding: 6px 12px;
+            border-radius: 36px;
+            color: #bbf0ff;
+            font-size: 0.75rem;
+        }
+
+        .stat-value {
+            color: #f7d44a;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-left: 6px;
+        }
+
+        .stat-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .stat-btn {
+            background: #1e3a4d;
+            border: none;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.1s linear;
+            font-family: monospace;
+        }
+
+        .stat-btn:active {
+            transform: scale(0.96);
+            background: #0d2c3b;
+        }
+
+        /* button grid */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            background: #1e2f3c;
+            border: none;
+            padding: 14px 0;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #eef4ff;
+            cursor: pointer;
+            transition: 0.08s linear;
+            font-family: 'Segoe UI', 'Courier New', monospace;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: scale(0.96);
+            background: #0f2533;
+        }
+
+        .btn-func {
+            background: #2f4b61;
+            color: #ffffff;
+            font-size: 0.85rem;
+        }
+
+        .btn-op {
+            background: #c97e2c;
+            color: #ffffff;
+            font-size: 1.2rem;
+        }
+
+        .btn-equal {
+            background: #2b8c5e;
+            color: white;
+            font-size: 1.3rem;
+            grid-column: span 2;
+        }
+
+        .btn-clear {
+            background: #922b3e;
+            color: white;
+        }
+
+        .btn-stat {
+            background: #366b6b;
+            font-size: 0.75rem;
+        }
+
+        @media (max-width: 520px) {
+            .buttons {
+                gap: 8px;
+            }
+            button {
+                font-size: 0.85rem;
+                padding: 12px 0;
+            }
+            .result {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="calculator">
+    <div class="display">
+        <div class="expression" id="exprDisplay">0</div>
+        <div class="result" id="resultDisplay">= 0</div>
+    </div>
+
+    <!-- Statistics live summary -->
+    <div class="stats-panel" id="statsPanel">
+        <div class="stat-badge">📊 DATA: <span id="dataCount" class="stat-value">0</span></div>
+        <div class="stat-badge">📈 Σx: <span id="sumX" class="stat-value">0</span></div>
+        <div class="stat-badge">📉 Mean: <span id="meanVal" class="stat-value">—</span></div>
+        <div class="stat-badge">⚡ σ: <span id="stdDev" class="stat-value">—</span></div>
+        <div class="stat-buttons">
+            <button class="stat-btn" id="addDataBtn">➕ ADD</button>
+            <button class="stat-btn" id="clearDataBtn">🗑 CLEAR</button>
+        </div>
+    </div>
+
+    <div class="buttons" id="buttonGrid">
+        <!-- buttons will be generated dynamically for cleaner html, but I'll define layout -->
+    </div>
+</div>
+
+<script>
+    // ---------- SCIENTIFIC & STATISTICS CORE ----------
+    // two main modes: standard expression evaluation (safe math) + data list for statistics
+
+    // DATA STORAGE (statistics)
+    let dataList = [];     // stores numbers (floats)
+
+    // Expression state
+    let currentExpression = "";   // raw expression typed
+    let lastResult = null;         // last computed numeric result
+
+    // DOM elements
+    const exprDisplay = document.getElementById('exprDisplay');
+    const resultDisplay = document.getElementById('resultDisplay');
+    const dataCountSpan = document.getElementById('dataCount');
+    const sumXSpan = document.getElementById('sumX');
+    const meanSpan = document.getElementById('meanVal');
+    const stdDevSpan = document.getElementById('stdDev');
+
+    // Helper: update stats UI whenever dataList changes
+    function updateStatsUI() {
+        const n = dataList.length;
+        dataCountSpan.innerText = n;
+        if (n === 0) {
+            sumXSpan.innerText = "0";
+            meanSpan.innerText = "—";
+            stdDevSpan.innerText = "—";
+            return;
+        }
+        let sum = 0;
+        for (let v of dataList) sum += v;
+        const mean = sum / n;
+        let variance = 0;
+        for (let v of dataList) variance += (v - mean) ** 2;
+        const populationStd = Math.sqrt(variance / n);
+        sumXSpan.innerText = sum.toFixed(4);
+        meanSpan.innerText = mean.toFixed(5);
+        stdDevSpan.innerText = populationStd.toFixed(5);
+    }
+
+    // safely evaluate mathematical expression (scientific)
+    // support: + - * / ^ (power), sqrt, sin, cos, tan, ln, log10, pi, e, factorial, percentage (experimental), parentheses
+    function evaluateScientific(expr) {
+        if (expr.trim() === "") return NaN;
+        // Replace ^ with ** for exponentiation
+        let processed = expr.replace(/\^/g, '**');
+        // Helper: replace constants
+        processed = processed.replace(/π/gi, 'Math.PI');
+        processed = processed.replace(/e\b/gi, 'Math.E');
+        // Replace functions with JS math
+        // sqrt( -> Math.sqrt(
+        processed = processed.replace(/sqrt\(/gi, 'Math.sqrt(');
+        processed = processed.replace(/sin\(/gi, 'Math.sin(');
+        processed = processed.replace(/cos\(/gi, 'Math.cos(');
+        processed = processed.replace(/tan\(/gi, 'Math.tan(');
+        processed = processed.replace(/ln\(/gi, 'Math.log(');
+        processed = processed.replace(/log10\(/gi, 'function_log10(');
+        // factorial custom: n! pattern (factorial)
+        // We'll handle factorial before eval: replace number! or (expr)!
+        // use recursion safe
+        processed = processed.replace(/(\d+(?:\.\d+)?)!|\(([^()]+)\)!/g, (match, num, parenExpr) => {
+            let target;
+            if (num !== undefined) target = parseFloat(num);
+            else if (parenExpr !== undefined) {
+                // evaluate inner expression first (recursive)
+                let innerVal = evaluateScientific(parenExpr);
+                if (isNaN(innerVal)) return 'NaN';
+                target = innerVal;
+            } else return match;
+            if (target < 0 || !Number.isInteger(target)) return 'NaN';
+            let fact = 1;
+            for (let i = 2; i <= target; i++) fact *= i;
+            return fact.toString();
+        });
+        // percentage: x% converts to x/100
+        processed = processed.replace(/(\d+(?:\.\d+)?)%/g, (match, num) => {
+            return `(${parseFloat(num)}/100)`;
+        });
+        // add missing multiplication: like 2(3+4) -> 2*(3+4)
+        processed = processed.replace(/(\d|\))(\()/g, '$1*$2');
+        processed = processed.replace(/(\d)([a-zA-Z]+)/g, (match, num, func) => {
+            if (func.startsWith('Math')) return match;
+            return `${num}*${func}`;
+        });
+        // define log10 polyfill
+        const function_log10 = (x) => Math.log10(x);
+        // secure eval using Function constructor (no global leakage)
+        let evalFunc;
+        try {
+            evalFunc = new Function('return (' + processed + ')');
+            let result = evalFunc();
+            if (isNaN(result) || !isFinite(result)) throw new Error("Math error");
+            return result;
+        } catch (err) {
+            console.warn("eval error", err);
+            return NaN;
+        }
+    }
+
+    // update main display from currentExpression
+    function refreshDisplay() {
+        let showExpr = currentExpression === "" ? "0" : currentExpression;
+        exprDisplay.innerText = showExpr;
+        if (lastResult !== null && !isNaN(lastResult) && isFinite(lastResult)) {
+            let resStr = typeof lastResult === 'number' ? parseFloat(lastResult.toFixed(10)).toString() : lastResult.toString();
+            resultDisplay.innerText = "= " + resStr;
+        } else if (lastResult === null) {
+            resultDisplay.innerText = "= ";
+        } else {
+            resultDisplay.innerText = "= Error";
+        }
+    }
+
+    // compute full expression and update result & lastResult
+    function computeAndUpdate() {
+        if (currentExpression.trim() === "") {
+            lastResult = null;
+            refreshDisplay();
+            return;
+        }
+        let computed = evaluateScientific(currentExpression);
+        if (isNaN(computed) || !isFinite(computed)) {
+            lastResult = NaN;
+            refreshDisplay();
+        } else {
+            lastResult = computed;
+            refreshDisplay();
+        }
+    }
+
+    // append token to expression and re-evaluate
+    function appendToExpression(value) {
+        if (currentExpression === "0" && /[\d\.]/.test(value) && value !== '.') {
+            currentExpression = value;
+        } else {
+            currentExpression += value;
+        }
+        // auto-evaluate after each change? yes for realtime feel (but careful)
+        computeAndUpdate();
+    }
+
+    // clear all
+    function clearAll() {
+        currentExpression = "";
+        lastResult = null;
+        refreshDisplay();
+    }
+
+    // backspace
+    function backspace() {
+        if (currentExpression.length > 0) {
+            currentExpression = currentExpression.slice(0, -1);
+            computeAndUpdate();
+        } else {
+            // nothing
+            refreshDisplay();
+        }
+    }
+
+    // add current result (or current expression value) to statistics data list
+    function addCurrentToStats() {
+        let numericVal;
+        if (lastResult !== null && !isNaN(lastResult) && isFinite(lastResult)) {
+            numericVal = lastResult;
+        } else {
+            // try to evaluate current expression directly
+            let evalNow = evaluateScientific(currentExpression);
+            if (!isNaN(evalNow) && isFinite(evalNow)) {
+                numericVal = evalNow;
+                lastResult = numericVal;
+                refreshDisplay();
+            } else {
+                alert("Invalid number: cannot add to statistics. Enter a valid expression.");
+                return;
+            }
+        }
+        dataList.push(numericVal);
+        updateStatsUI();
+        // optional: show feedback with small animation
+    }
+
+    function clearData() {
+        dataList = [];
+        updateStatsUI();
+    }
+
+    // ---- special static functions: mean, sum, etc from data can be inserted into expression ----
+    function insertStatValue(statType) {
+        let val = null;
+        if (statType === 'mean') {
+            if (dataList.length === 0) val = NaN;
+            else val = dataList.reduce((a,b)=>a+b,0)/dataList.length;
+        } else if (statType === 'sum') {
+            val = dataList.reduce((a,b)=>a+b,0);
+        } else if (statType === 'count') {
+            val = dataList.length;
+        } else if (statType === 'std') {
+            if (dataList.length === 0) val = NaN;
+            else {
+                let mean = dataList.reduce((a,b)=>a+b,0)/dataList.length;
+                let variance = dataList.reduce((acc,x)=> acc + (x-mean)**2,0)/dataList.length;
+                val = Math.sqrt(variance);
+            }
+        } else {
+            return;
+        }
+        if (isNaN(val) || !isFinite(val)) {
+            alert("Stats not available (no data or invalid)");
+            return;
+        }
+        // insert this numeric value as part of expression
+        let valStr = val.toString();
+        if (currentExpression === "0") currentExpression = valStr;
+        else currentExpression += valStr;
+        computeAndUpdate();
+    }
+
+    // ---- Build UI Buttons Dynamically (clean mapping) ----
+    const buttonDefinitions = [
+        // Row 1: scientific functions + clear/back
+        { label: "sin", type: "func", action: "sin(" },
+        { label: "cos", type: "func", action: "cos(" },
+        { label: "tan", type: "func", action: "tan(" },
+        { label: "ln", type: "func", action: "ln(" },
+        { label: "log", type: "func", action: "log10(" },
+        { label: "AC", type: "clear", action: "clear" },
+        // Row 2: sqrt, ^, π, e, !, ⌫
+        { label: "√", type: "func", action: "sqrt(" },
+        { label: "^", type: "op", action: "^" },
+        { label: "π", type: "const", action: "π" },
+        { label: "e", type: "const", action: "e" },
+        { label: "n!", type: "func", action: "!" },
+        { label: "⌫", type: "back", action: "back" },
+        // Row 3: digits & parentheses & factorial
+        { label: "7", type: "num", action: "7" },
+        { label: "8", type: "num", action: "8" },
+        { label: "9", type: "num", action: "9" },
+        { label: "(", type: "paren", action: "(" },
+        { label: ")", type: "paren", action: ")" },
+        { label: "%", type: "op", action: "%" },
+        // Row 4
+        { label: "4", type: "num", action: "4" },
+        { label: "5", type: "num", action: "5" },
+        { label: "6", type: "num", action: "6" },
+        { label: "*", type: "op", action: "*" },
+        { label: "/", type: "op", action: "/" },
+        { label: "x̄", type: "statIns", action: "mean" },   // insert mean
+        // Row 5
+        { label: "1", type: "num", action: "1" },
+        { label: "2", type: "num", action: "2" },
+        { label: "3", type: "num", action: "3" },
+        { label: "+", type: "op", action: "+" },
+        { label: "-", type: "op", action: "-" },
+        { label: "Σx", type: "statIns", action: "sum" },
+        // Row 6
+        { label: "0", type: "num", action: "0" },
+        { label: ".", type: "num", action: "." },
+        { label: "=", type: "equal", action: "equal" },
+        { label: "σ", type: "statIns", action: "std" },
+        { label: "N", type: "statIns", action: "count" },
+        { label: "CLEAR", type: "statData", action: "clearData" }
+    ];
+
+    // container
+    const buttonsContainer = document.getElementById('buttonGrid');
+    function buildButtons() {
+        buttonsContainer.innerHTML = "";
+        for (let btn of buttonDefinitions) {
+            const buttonEl = document.createElement('button');
+            buttonEl.innerText = btn.label;
+            // assign style class
+            if (btn.type === "func") buttonEl.classList.add("btn-func");
+            else if (btn.type === "op") buttonEl.classList.add("btn-op");
+            else if (btn.type === "equal") buttonEl.classList.add("btn-equal");
+            else if (btn.type === "clear") buttonEl.classList.add("btn-clear");
+            else if (btn.type === "statIns" || btn.type === "statData") buttonEl.classList.add("btn-stat");
+            else buttonEl.classList.add("btn-num");
+
+            buttonEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                switch (btn.action) {
+                    case "clear":
+                        clearAll();
+                        break;
+                    case "back":
+                        backspace();
+                        break;
+                    case "equal":
+                        computeAndUpdate();
+                        // if result valid, you could store to lastResult
+                        break;
+                    case "mean":
+                        insertStatValue('mean');
+                        break;
+                    case "sum":
+                        insertStatValue('sum');
+                        break;
+                    case "std":
+                        insertStatValue('std');
+                        break;
+                    case "count":
+                        insertStatValue('count');
+                        break;
+                    case "clearData":
+                        clearData();
+                        break;
+                    default:
+                        // for numbers, operators, constants, functions
+                        appendToExpression(btn.action);
+                        break;
+                }
+            });
+            buttonsContainer.appendChild(buttonEl);
+        }
+        // extra custom button for "ADD DATA" (already in stats panel, but also great)
+        // we already have ADD data button on panel, so fine.
+    }
+
+    // add event listeners for stats panel buttons
+    function bindStatsPanel() {
+        document.getElementById('addDataBtn').addEventListener('click', () => {
+            addCurrentToStats();
+        });
+        document.getElementById('clearDataBtn').addEventListener('click', () => {
+            clearData();
+        });
+    }
+
+    // also handle keyboard support (bonus)
+    function handleKeyboard(e) {
+        const key = e.key;
+        // digits and operators
+        if (/[\d\.\+\-\*\/\(\)\%\^]/.test(key)) {
+            e.preventDefault();
+            appendToExpression(key);
+        } else if (key === 'Enter') {
+            e.preventDefault();
+            computeAndUpdate();
+        } else if (key === 'Backspace') {
+            e.preventDefault();
+            backspace();
+        } else if (key === 'Escape') {
+            e.preventDefault();
+            clearAll();
+        } else if (key === 's' && e.ctrlKey) {
+            e.preventDefault();
+            addCurrentToStats();
+        } else if (key === 'Delete' && e.shiftKey) {
+            e.preventDefault();
+            clearData();
+        } else if (key === '!') {
+            e.preventDefault();
+            appendToExpression('!');
+        } else if (key === 'p') {
+            e.preventDefault();
+            appendToExpression('π');
+        }
+    }
+
+    // initial load
+    function init() {
+        buildButtons();
+        bindStatsPanel();
+        window.addEventListener('keydown', handleKeyboard);
+        clearAll();
+        updateStatsUI();
+        // add sample data to demo stats (optional but shows functionality)
+        // dataList = [12.5, 14.2, 13.8, 15.1];
+        // updateStatsUI();
+        // just have empty data, but user can add
+        refreshDisplay();
+    }
+
+    init();
+</script>
+</body>
+</html>
